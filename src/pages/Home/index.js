@@ -73,7 +73,7 @@ export default function Home() {
       <li>
         <img
           src="https://static.netshoes.com.br/produtos/tenis-vr-caminhada-confortavel-detalhes-couro-masculino/04/E74-0413-304/E74-0413-304_detalhe2.jpg?resize=326:*"
-          alt=""
+          alt="Tênis"
         />
         <strong>Tenis para corrida</strong>
         <span>R$190,99</span>
