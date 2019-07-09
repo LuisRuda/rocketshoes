@@ -1,91 +1,62 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { MdAddShoppingCart } from 'react-icons/md';
+import { formatPrice } from '../../util/format';
+import api from '../../services/api';
 
 import { ProductList } from './styles';
 
-export default function Home() {
-  return (
-    <ProductList>
-      <li>
-        <img
-          src="https://static.netshoes.com.br/produtos/tenis-vr-caminhada-confortavel-detalhes-couro-masculino/04/E74-0413-304/E74-0413-304_detalhe2.jpg?resize=326:*"
-          alt=""
-        />
-        <strong>Tenis para corrida</strong>
-        <span>R$190,99</span>
+class Home extends Component {
+  state = {
+    products: [],
+  };
 
-        <button type="button">
-          <div>
-            <MdAddShoppingCart size={16} color="#FFF" />
-          </div>
+  async componentDidMount() {
+    const response = await api.get('products');
 
-          <span>ADICIONAR AO CARRINHO</span>
-        </button>
-      </li>
-      <li>
-        <img
-          src="https://static.netshoes.com.br/produtos/tenis-vr-caminhada-confortavel-detalhes-couro-masculino/04/E74-0413-304/E74-0413-304_detalhe2.jpg?resize=326:*"
-          alt=""
-        />
-        <strong>Tenis para corrida</strong>
-        <span>R$190,99</span>
+    const data = response.data.map(product => ({
+      ...product,
+      priceFormatted: formatPrice(product.price),
+    }));
 
-        <button type="button">
-          <div>
-            <MdAddShoppingCart size={16} color="#FFF" />
-          </div>
+    this.setState({ products: data });
+  }
 
-          <span>ADICIONAR AO CARRINHO</span>
-        </button>
-      </li>
-      <li>
-        <img
-          src="https://static.netshoes.com.br/produtos/tenis-vr-caminhada-confortavel-detalhes-couro-masculino/04/E74-0413-304/E74-0413-304_detalhe2.jpg?resize=326:*"
-          alt=""
-        />
-        <strong>Tenis para corrida</strong>
-        <span>R$190,99</span>
+  handleAddProduct = product => {
+    const { dispatch } = this.props;
 
-        <button type="button">
-          <div>
-            <MdAddShoppingCart size={16} color="#FFF" />
-          </div>
+    dispatch({
+      type: 'ADD_TO_CART',
+      product,
+    });
+  };
 
-          <span>ADICIONAR AO CARRINHO</span>
-        </button>
-      </li>
-      <li>
-        <img
-          src="https://static.netshoes.com.br/produtos/tenis-vr-caminhada-confortavel-detalhes-couro-masculino/04/E74-0413-304/E74-0413-304_detalhe2.jpg?resize=326:*"
-          alt=""
-        />
-        <strong>Tenis para corrida</strong>
-        <span>R$190,99</span>
+  render() {
+    const { products } = this.state;
 
-        <button type="button">
-          <div>
-            <MdAddShoppingCart size={16} color="#FFF" />
-          </div>
+    return (
+      <ProductList>
+        {products.map(product => (
+          <li key={product.id}>
+            <img src={product.image} alt={product.title} />
+            <strong>{product.title}</strong>
+            <span>{product.priceFormatted}</span>
 
-          <span>ADICIONAR AO CARRINHO</span>
-        </button>
-      </li>
-      <li>
-        <img
-          src="https://static.netshoes.com.br/produtos/tenis-vr-caminhada-confortavel-detalhes-couro-masculino/04/E74-0413-304/E74-0413-304_detalhe2.jpg?resize=326:*"
-          alt="Tênis"
-        />
-        <strong>Tenis para corrida</strong>
-        <span>R$190,99</span>
+            <button
+              type="button"
+              onClick={() => this.handleAddProduct(product)}
+            >
+              <div>
+                <MdAddShoppingCart size={16} color="#FFF" />
+              </div>
 
-        <button type="button">
-          <div>
-            <MdAddShoppingCart size={16} color="#FFF" />
-          </div>
-
-          <span>ADICIONAR AO CARRINHO</span>
-        </button>
-      </li>
-    </ProductList>
-  );
+              <span>ADICIONAR AO CARRINHO</span>
+            </button>
+          </li>
+        ))}
+      </ProductList>
+    );
+  }
 }
+
+export default connect()(Home);
